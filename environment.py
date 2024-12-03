@@ -30,12 +30,10 @@ class Environment:
     def load_assets(self, world_map:list):
         for i in range(len(world_map)):
             for j in range(len(world_map[i])):
-                if world_map[i][j] == 's':
-                    world_map[i][j] = utils.WaterStation((j, i))
-                elif world_map[i][j] == 'r':
+                if world_map[i][j] == '^' or world_map[i][j] == 'v' or world_map[i][j] == '<' or world_map[i][j] == '>':
                     world_map[i][j] = utils.Robot((j, i))
-                elif world_map[i][j] == '*':
-                    world_map[i][j] = utils.Flame()
+                elif world_map[i][j] == 'u' or world_map[i][j] == 'd' or world_map[i][j] == 'l' or world_map[i][j] == 'r':
+                    world_map[i][j] = utils.BaseStation((j, i), world_map[i][j])
         return world_map
 
     def get_cells(self, positions:list) -> dict[tuple[int,int],...]:

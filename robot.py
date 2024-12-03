@@ -6,10 +6,20 @@ import heapq
 
 class Robot(Agent):
 
-    def __init__(self, position: tuple[int, int]):
+    def __init__(self, position: tuple[int, int], dire):
         super().__init__(position)
-        self.water_level = 100
-        self.water_station_location = None
+        self.dire = dire
+        self.front = []
+        if self.dire == '^':
+            self.front = [self.position[0] - 1, self.position[1]]
+        elif self.dire == 'v':
+            self.front = [self.position[0] + 1, self.position[1]]
+        elif self.dire == '<':
+            self.front = [self.position[0], self.position[1] - 1]
+        elif self.dire == '>':
+            self.front = [self.position[0], self.position[1] + 1]
+        self.battery_level = 20
+        self.base_station_location = None
 
     def decide(self, percept: dict[tuple[int, int], ...]):
         adjacent = self.sense(percept)
@@ -20,6 +30,7 @@ class Robot(Agent):
                 print("checking", percept[cell])
 
     def act(self, environment):
+        self.random()
         pass
 
     def flame(self, environment):
@@ -108,24 +119,13 @@ class Robot(Agent):
         return path
 
     def viable_move(self, x, y, adjacent):
-        # You will need to do this one
-        # print("p", adjacent[x, y])
-        # print("o", x, y)
         cell = adjacent[x, y]
-        # Do not move in to a cell containing an obstacle (represented by 'x')
         if cell == 'x':
             return False
-        # Do not move in to a cell containing a flame
-        elif utils.is_flame(cell):
+        elif utils.is_base_station(cell):
             return False
-        # Do not move in to a cell containing a water station
-        elif utils.is_water_station(cell):
-            return False
-        # Do not move in to a cell containing a robot.
         elif utils.is_robot(cell):
             return False
-        # In fact, the only valid cells are blank ones
-        # Also, do not go out of bounds.
         else:
             return True
 
