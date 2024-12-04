@@ -31,9 +31,11 @@ class Environment:
         for i in range(len(world_map)):
             for j in range(len(world_map[i])):
                 if world_map[i][j] == '^' or world_map[i][j] == 'v' or world_map[i][j] == '<' or world_map[i][j] == '>':
-                    world_map[i][j] = utils.Robot((j, i))
+                    world_map[i][j] = utils.Robot((j, i), world_map[i][j])
+                    print("robot location", world_map[i][j], (i, j))
                 elif world_map[i][j] == 'u' or world_map[i][j] == 'd' or world_map[i][j] == 'l' or world_map[i][j] == 'r':
                     world_map[i][j] = utils.BaseStation((j, i), world_map[i][j])
+                    print("base location", world_map[i][j], (i, j))
         return world_map
 
     def get_cells(self, positions:list) -> dict[tuple[int,int],...]:
@@ -76,17 +78,13 @@ class Environment:
 
 
 if __name__ == "__main__":
-    e = Environment("map.txt")
+    e = Environment("floorplan.txt")
 
-    water = e.world[1][5]
-    robot1 = e.world[2][5]
+    base1 = e.world[10][3]
+    robot1 = e.world[11][3]
 
-    for i in range(50):  # Change 1 simulate more moves. I.e. 100 would simulate 100 moves
+    for i in range(2):  # Change 1 simulate more moves. I.e. 100 would simulate 100 moves
         # Call the act method for each agent operating in the environment
-        water.act(e)
+        base1.act(e)
         print(e)
-        robot1.decide(e)
-        #robot1.flame(e)
-        # print("before", robot1.position)
-        robot1.random(e)
-        # print("after", robot1.position)
+        robot1.act(e)

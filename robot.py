@@ -30,7 +30,7 @@ class Robot(Agent):
                 print("checking", percept[cell])
 
     def act(self, environment):
-        self.random()
+        self.random(environment)
         pass
 
     def flame(self, environment):
@@ -72,7 +72,7 @@ class Robot(Agent):
             print("blocked")
 
     def __str__(self):
-        return '🚒'
+        return self.dire
 
     # MANHATTAN DISTANCE FUNCTIONS
     def calc_path(self, start, goal, environment):
@@ -137,4 +137,4 @@ class Robot(Agent):
     # END OF MANHATTAN DISTANCE FUNCTIONS
 
     def refill(self):
-        self.water_level = 100
+        self.battery_level = self.battery_level + 1
