@@ -7,10 +7,10 @@ class Agent(ABC):
     def __init__(self, position: tuple[int, int]):
         self.position = position
         self.direction_offsets = {
-            "up": (-1, 0),
-            "right": (0, 1),
-            "down": (1, 0),
-            "left": (0, -1)
+            "up": (0, -1),
+            "right": (1, 0),
+            "down": (0, 1),
+            "left": (-1, 0)
         }
 
     def sense(self, environment):

@@ -33,14 +33,6 @@ class Robot(Agent):
         self.random(environment)
         pass
 
-    def flame(self, environment):
-        adjacent = self.sense(environment)
-        for cell in adjacent:
-            print("cell value", cell, environment.world[cell[1]][cell[0]])
-            if environment.world[cell[1]][cell[0]] == '🔥':
-                print("Flame sensed")
-                environment.world[cell[1]][cell[0]] = ''
-
     def random(self, environment):
         directions = {
             "right": (0, 1),
@@ -48,9 +40,15 @@ class Robot(Agent):
             "up": (-1, 0),
             "down": (1, 0)
         }
+        options = ["move", "left", "right"]
         names = ["up", "right", "down", "left"]
-        num = random.randint(1, 4)
-        way = names[num - 1]
+        num1 = random.randint(1, 3)
+        num2 = random.randint(1, 4)
+        choice = options[num1 - 1]
+        way = names[num2 - 1]
+        for o in options:
+            if choice == 0:
+                to = (self.position[0] + directions[way][0], self.position[1] + directions[way][1])
         for direction in names:
             #print("check", directions[way], directions[direction])
             if directions[way] == directions[direction]:
@@ -65,7 +63,7 @@ class Robot(Agent):
             print(self.position, to)
             old = self.position
             self.position = (to[0], to[1])
-            print(self.position)
+            #print(self.position)
             environment.world[old[1]][old[0]] = ''
             environment.world[self.position[1]][self.position[0]] = self.__str__()
         elif self.viable_move(to[0], to[1], self.sense(environment)) is not True:
@@ -138,3 +136,4 @@ class Robot(Agent):
 
     def refill(self):
         self.battery_level = self.battery_level + 1
+        print("refilled")

@@ -32,10 +32,10 @@ class Environment:
             for j in range(len(world_map[i])):
                 if world_map[i][j] == '^' or world_map[i][j] == 'v' or world_map[i][j] == '<' or world_map[i][j] == '>':
                     world_map[i][j] = utils.Robot((j, i), world_map[i][j])
-                    print("robot location", world_map[i][j], (i, j))
+                    print("robot location", world_map[j][i], (j, i))
                 elif world_map[i][j] == 'u' or world_map[i][j] == 'd' or world_map[i][j] == 'l' or world_map[i][j] == 'r':
                     world_map[i][j] = utils.BaseStation((j, i), world_map[i][j])
-                    print("base location", world_map[i][j], (i, j))
+                    print("base location", world_map[j][i], (j, i))
         return world_map
 
     def get_cells(self, positions:list) -> dict[tuple[int,int],...]:
@@ -62,15 +62,9 @@ class Environment:
             valid = True
         elif (goal[0], goal[1]) == (goal[0], start[1] - 1):
             valid = True
-        print("goal", goal[0], goal[1])
-        # print("start", start[0], start[1])
-        # print("1",(start[0] + 1, goal[1]))
-        # print("2",(start[0] - 1, goal[1]))
-        # print("3",(goal[0], goal[1] + 1))
-        # print("4",(goal[0], goal[1] - 1))
-        # print("Valid", valid)
+        #print("goal", goal[0], goal[1])
         if valid is True:
-            print("success")
+            #print("success")
             return True
         else:
             return False
@@ -83,7 +77,7 @@ if __name__ == "__main__":
     base1 = e.world[10][3]
     robot1 = e.world[11][3]
 
-    for i in range(2):  # Change 1 simulate more moves. I.e. 100 would simulate 100 moves
+    for i in range(5):  # Change 1 simulate more moves. I.e. 100 would simulate 100 moves
         # Call the act method for each agent operating in the environment
         base1.act(e)
         print(e)
