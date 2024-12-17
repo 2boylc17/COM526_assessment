@@ -10,16 +10,10 @@ class Robot(Agent):
         super().__init__(position)
         self.dire = dire
         self.front = []
-        if self.dire == '^':
-            self.front = [self.position[0] - 1, self.position[1]]
-        elif self.dire == 'v':
-            self.front = [self.position[0] + 1, self.position[1]]
-        elif self.dire == '<':
-            self.front = [self.position[0], self.position[1] - 1]
-        elif self.dire == '>':
-            self.front = [self.position[0], self.position[1] + 1]
+        self.front_change()
         self.battery_level = 20
         self.base_station_location = None
+        print("s", self.position, self.front)
 
     def decide(self, percept: dict[tuple[int, int], ...]):
         adjacent = self.sense(percept)
@@ -31,32 +25,83 @@ class Robot(Agent):
 
     def act(self, environment):
         self.random(environment)
-        pass
+        self.battery_level = self.battery_level - 1
+        print("battery", self.battery_level)
+
+    def front_change(self):
+        if self.dire == '^':
+            self.front = [self.position[0] - 1, self.position[1]]
+        elif self.dire == 'v':
+            self.front = [self.position[0] + 1, self.position[1]]
+        elif self.dire == '<':
+            self.front = [self.position[0], self.position[1] - 1]
+        elif self.dire == '>':
+            self.front = [self.position[0], self.position[1] + 1]
 
     def random(self, environment):
         directions = {
-            "right": (0, 1),
-            "left": (0, -1),
-            "up": (-1, 0),
-            "down": (1, 0)
+            "down": (0, 1),
+            "up": (0, -1),
+            "left": (-1, 0),
+            "right": (1, 0)
         }
+        way = ""
+        if self.dire == '^':
+            way = "up"
+        elif self.dire == 'v':
+            way = "down"
+        elif self.dire == '<':
+            way = "left"
+        elif self.dire == '>':
+            way = "right"
         options = ["move", "left", "right"]
-        names = ["up", "right", "down", "left"]
         num1 = random.randint(1, 3)
-        num2 = random.randint(1, 4)
         choice = options[num1 - 1]
-        way = names[num2 - 1]
-        for o in options:
-            if choice == 0:
-                to = (self.position[0] + directions[way][0], self.position[1] + directions[way][1])
-        for direction in names:
-            #print("check", directions[way], directions[direction])
-            if directions[way] == directions[direction]:
-                #print("happening", self.position, directions[way])
-                to = (self.position[0] + directions[way][0], self.position[1] + directions[way][1])
-                #print("happen", to)
-                self.move(environment, to)
-                break
+        print("choice", choice)
+        if choice == "move":
+            #print("move active")
+            to = (self.position[0] + directions[way][0], self.position[1] + directions[way][1])
+            self.move(environment, to)
+        elif choice == "right":
+            #print("right active", self.dire)
+            if self.dire == '^':
+                self.dire = '>'
+                self.front_change()
+                environment.world[self.position[1]][self.position[0]] = self.__str__()
+            elif self.dire == 'v':
+                self.dire = '<'
+                self.front_change()
+                environment.world[self.position[1]][self.position[0]] = self.__str__()
+            elif self.dire == '<':
+                self.dire = '^'
+                self.front_change()
+                environment.world[self.position[1]][self.position[0]] = self.__str__()
+            elif self.dire == '>':
+                #print("before", self.dire)
+                self.dire = 'v'
+                self.front_change()
+                environment.world[self.position[1]][self.position[0]] = self.__str__()
+                #print("after", self.dire)
+        elif choice == "left":
+            #print("left active", self.dire)
+            if self.dire == '^':
+                self.dire = '<'
+                self.front_change()
+                environment.world[self.position[1]][self.position[0]] = self.__str__()
+            elif self.dire == 'v':
+                self.dire = '>'
+                self.front_change()
+                environment.world[self.position[1]][self.position[0]] = self.__str__()
+            elif self.dire == '<':
+                self.dire = 'v'
+                self.front_change()
+                environment.world[self.position[1]][self.position[0]] = self.__str__()
+            elif self.dire == '>':
+                self.dire = '^'
+                self.front_change()
+                environment.world[self.position[1]][self.position[0]] = self.__str__()
+        else:
+            print("active error")
 
     def move(self, environment, to):
         if environment.move_to(self.position, to) and self.viable_move(to[0], to[1], self.sense(environment)):
@@ -64,8 +109,9 @@ class Robot(Agent):
             old = self.position
             self.position = (to[0], to[1])
             #print(self.position)
-            environment.world[old[1]][old[0]] = ''
+            environment.world[old[1]][old[0]] = ' '
             environment.world[self.position[1]][self.position[0]] = self.__str__()
+            self.front_change()
         elif self.viable_move(to[0], to[1], self.sense(environment)) is not True:
             print("blocked")
 
@@ -134,6 +180,6 @@ class Robot(Agent):
 
     # END OF MANHATTAN DISTANCE FUNCTIONS
 
-    def refill(self):
-        self.battery_level = self.battery_level + 1
-        print("refilled")
+    def recharge(self):
+        self.battery_level = self.battery_level + 5
+        print("recharged")

@@ -22,7 +22,7 @@ class BaseStation(Agent):
         for k, v in percept.items():
             #print([k[0], k[1]], self.front, v, "test")
             if utils.is_robot(v) and [k[0], k[1]] == self.front:
-                v.refill()
+                v.recharge()
         return
 
     def act(self, environment):

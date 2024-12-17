@@ -74,11 +74,12 @@ class Environment:
 if __name__ == "__main__":
     e = Environment("floorplan.txt")
 
-    base1 = e.world[10][3]
-    robot1 = e.world[11][3]
-
-    for i in range(5):  # Change 1 simulate more moves. I.e. 100 would simulate 100 moves
+    robot1 = e.world[10][3]
+    base1 = e.world[11][3]
+    print(e)
+    while(robot1.battery_level != 0):  # Change 1 simulate more moves. I.e. 100 would simulate 100 moves
         # Call the act method for each agent operating in the environment
         base1.act(e)
-        print(e)
         robot1.act(e)
+        print(e)
+    print("Out of Battery")
