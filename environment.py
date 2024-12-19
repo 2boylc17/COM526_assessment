@@ -10,7 +10,7 @@ class Environment:
     def load_map(self):
         try:
             with open(self.file_path) as f:
-                world_map = row = [[col.lower() for col in line.strip()] for line in f]
+                world_map = [[col.lower() for col in line.strip()] for line in f]
 
                 # quick error check
                 first_row = len(world_map[0])
@@ -22,23 +22,29 @@ class Environment:
             print(f"File not found")
         except PermissionError:
             print(f"File read permissions were denied")
-        except IOError as e:
-            print(f"IO error: {e}")
+        except IOError as er:
+            print(f"IO error: {er}")
 
         return []
 
-    def load_assets(self, world_map:list):
+
+    def load_assets(self, world_map: list):
         for i in range(len(world_map)):
             for j in range(len(world_map[i])):
-                if world_map[i][j] == '^' or world_map[i][j] == 'v' or world_map[i][j] == '<' or world_map[i][j] == '>':
+                if (world_map[i][j] == '^' or world_map[i][j] == 'v'
+                        or world_map[i][j] == '<' or world_map[i][j] == '>'):
                     world_map[i][j] = utils.Robot((j, i), world_map[i][j])
                     print("robot location", world_map[j][i], (j, i))
-                elif world_map[i][j] == 'u' or world_map[i][j] == 'd' or world_map[i][j] == 'l' or world_map[i][j] == 'r':
+                elif (world_map[i][j] == 'u' or world_map[i][j] == 'd'
+                        or world_map[i][j] == 'l' or world_map[i][j] == 'r'):
                     world_map[i][j] = utils.BaseStation((j, i), world_map[i][j])
                     print("base location", world_map[j][i], (j, i))
+                elif world_map[i][j] == ' ':
+                    world_map[i][j] = utils.EmptySpot((j, i))
+                    # print(utils.EmptySpot((j, i)))
         return world_map
 
-    def get_cells(self, positions:list) -> dict[tuple[int,int],...]:
+    def get_cells(self, positions: list) -> dict[tuple[int, int], ...]:
         cells = {}
         for pos in positions:
             cells[pos] = self.world[pos[1]][pos[0]]
@@ -62,13 +68,12 @@ class Environment:
             valid = True
         elif (goal[0], goal[1]) == (goal[0], start[1] - 1):
             valid = True
-        #print("goal", goal[0], goal[1])
+        # print("goal", goal[0], goal[1])
         if valid is True:
-            #print("success")
+            # print("success")
             return True
         else:
             return False
-
 
 
 if __name__ == "__main__":
@@ -77,9 +82,11 @@ if __name__ == "__main__":
     robot1 = e.world[10][3]
     base1 = e.world[11][3]
     print(e)
-    while(robot1.battery_level != 0):  # Change 1 simulate more moves. I.e. 100 would simulate 100 moves
-        # Call the act method for each agent operating in the environment
+    count = 0
+    while (robot1.battery_level <= 0 or count >= 250) is not True:
         base1.act(e)
         robot1.act(e)
         print(e)
-    print("Out of Battery")
+        count += 1
+    print("Out of Battery. Cycles:", count)
+    print(robot1.map)

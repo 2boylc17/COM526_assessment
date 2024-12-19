@@ -1,5 +1,6 @@
 from robot import Robot
 from basestation import BaseStation
+from spot import EmptySpot
 
 
 def is_robot(obj):
