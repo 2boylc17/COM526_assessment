@@ -16,19 +16,18 @@ class BaseStation(Agent):
             self.front = [self.position[0] - 1, self.position[1]]
         elif self.dire == 'd':
             self.front = [self.position[0] + 1, self.position[1]]
-        #print(self.front, "front")
+        # print(self.front, "front")
 
     def decide(self, percept):
         for k, v in percept.items():
-            #print([k[0], k[1]], self.front, v, "test")
+            # print([k[0], k[1]], self.front, v, "test")
             if utils.is_robot(v) and [k[0], k[1]] == self.front:
                 v.recharge()
         return
 
     def act(self, environment):
         cell = self.sense(environment)
-        decision = self.decide(cell)
-        print(decision)
+        self.decide(cell)
 
     def __str__(self):
         return self.dire
@@ -36,8 +35,9 @@ class BaseStation(Agent):
     def sense(self, environment):
         neighbours = []
         for direction in ["up", "right", "down", "left"]:
-            if (direction == "up" and self.dire == "u") or (direction == "down" and self.dire == "d") or (direction == "left" and self.dire == "l") or (direction == "right" and self.dire == "d"):
+            if ((direction == "up" and self.dire == "u") or (direction == "down" and self.dire == "d") or
+                    (direction == "left" and self.dire == "l") or (direction == "right" and self.dire == "d")):
                 row_offset, col_offset = self.direction_offsets[direction]
                 neighbours.append((self.position[0] + row_offset, self.position[1] + col_offset))
-
+        # print(environment.get_cells(neighbours), "je")
         return environment.get_cells(neighbours)

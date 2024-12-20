@@ -83,10 +83,11 @@ if __name__ == "__main__":
     base1 = e.world[11][3]
     print(e)
     count = 0
-    while (robot1.battery_level <= 0 or count >= 250) is not True:
+    while (robot1.battery_level <= 0 or count >= 10000) is not True:
         base1.act(e)
         robot1.act(e)
         print(e)
         count += 1
+        print("count =", count)
     print("Out of Battery. Cycles:", count)
     print(robot1.map)
