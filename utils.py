@@ -13,3 +13,9 @@ def is_base_station(obj):
     if isinstance(obj, BaseStation):
         return True
     return False
+
+
+def is_empty_spot(obj):
+    if isinstance(obj, EmptySpot):
+        return True
+    return False

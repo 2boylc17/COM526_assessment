@@ -12,11 +12,11 @@ class Agent(ABC):
             "left": (-1, 0)
         }
 
-    def sense(self, environment):
+    def sense(self, environment, position):
         neighbours = []
         for direction in ["up", "right", "down", "left"]:
             row_offset, col_offset = self.direction_offsets[direction]
-            neighbours.append((self.position[0] + row_offset, self.position[1] + col_offset))
+            neighbours.append((position[0] + row_offset, position[1] + col_offset))
 
         return environment.get_cells(neighbours)
 
