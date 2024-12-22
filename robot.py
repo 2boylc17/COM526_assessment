@@ -18,7 +18,7 @@ class Robot(Agent):
         self.front_change()
         self.spot = utils.EmptySpot((self.position[0], self.position[1]))
         self.spot.dirty = 0
-        self.mode = "Cleaning"
+        self.mode = "Idle"
         print("starting position", self.position, self.front)
 
     def decide(self, percept: dict[tuple[int, int], ...]):
@@ -82,13 +82,14 @@ class Robot(Agent):
         if self.base_station_location is None:
             base_distance = ["error"]
         else:
-            base_distance = self.calc_path(self.position, self.base_station_location, environment)
+            base_distance = self.calc_path(self.position, self.base_station_location)
         # print("bd", base_distance)
-        if (len(base_distance) * 2) + 1 >= self.battery_level and self.position != self.base_station_location and base_distance[0] != "error":
+        if ((len(base_distance) * 2) + 2 >= self.battery_level and self.position != self.base_station_location
+                and base_distance[0] != "error"):
             # print("commence")
             self.mode = "Moving"
             self.move_attempt(environment, base_distance[1])
-        elif self.position == self.base_station_location and self.battery_level < 90:
+        elif self.position == self.base_station_location and self.battery_level < 95:
             self.mode = "Charging"
             print("staying to charge")
         elif self.dirt_check(environment):
@@ -115,7 +116,6 @@ class Robot(Agent):
                 if dirty_spot == "":
                     if new_spot.dirty != 0:
                         dirty_spot = new_spot.position
-                        print("First")
                 elif new_spot.dirty > cell.get(dirty_spot).dirty:
                     dirty_spot = new_spot.position
         return dirty_spot
@@ -201,7 +201,8 @@ class Robot(Agent):
         self.map.world[self.position[1]][self.position[0]] = self.dire
 
     def move(self, environment, to):
-        if environment.move_to(self.position, to) and self.viable_move(to[0], to[1], self.sense(environment, self.position)):
+        if (environment.move_to(self.position, to) and
+                self.viable_move(to[0], to[1], self.sense(environment, self.position))):
             print("moving", self.position, to)
             old = self.position
             self.position = (to[0], to[1])
@@ -217,7 +218,7 @@ class Robot(Agent):
     def __str__(self):
         return self.dire
 
-    def calc_path(self, start, goal, environment):
+    def calc_path(self, start, goal):
         p_queue = []
         heapq.heappush(p_queue, (0, start))
         directions = {
@@ -235,14 +236,16 @@ class Robot(Agent):
             for direction in ["up", "right", "down", "left"]:
                 row_offset, col_offset = directions[direction]
                 neighbour = (current_cell[0] + row_offset, current_cell[1] + col_offset)
-                if self.viable_move(neighbour[0], neighbour[1], self.sense(self.map, current_cell)) and neighbour not in g_values:
+                if (self.viable_move(neighbour[0], neighbour[1], self.sense(self.map, current_cell))
+                        and neighbour not in g_values):
                     cost = g_values[current_cell] + 1
                     g_values[neighbour] = cost
                     f_value = cost + self.calc_distance(goal, neighbour)
                     heapq.heappush(p_queue, (f_value, neighbour))
                     predecessors[neighbour] = current_cell
 
-    def get_path(self, predecessors, start, goal):
+    @staticmethod
+    def get_path(predecessors, start, goal):
         current = goal
         path = []
         while current != start:
@@ -250,13 +253,13 @@ class Robot(Agent):
             current = predecessors[current]
         path.append(start)
         path.reverse()
-        # print("path", path)
         return path
 
-    def viable_move(self, x, y, adjacent):
+    @staticmethod
+    def viable_move(x, y, adjacent):
         # print("via", x, y, adjacent)
         cell = adjacent[(x, y)]
-        if cell == 'x':
+        if cell == 'x' or cell == '?':
             return False
         elif utils.is_base_station(cell):
             return False
@@ -266,7 +269,8 @@ class Robot(Agent):
             # print("viable move", cell)
             return True
 
-    def calc_distance(self, point1: tuple[int, int], point2: tuple[int, int]):
+    @staticmethod
+    def calc_distance(point1: tuple[int, int], point2: tuple[int, int]):
         x1, y1 = point1
         x2, y2 = point2
         return abs(x1 - x2) + abs(y1 - y2)

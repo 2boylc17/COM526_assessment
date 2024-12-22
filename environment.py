@@ -76,7 +76,7 @@ class Environment:
 
 
 if __name__ == "__main__":
-    floorplan = "floorplan2.txt"
+    floorplan = "floorplan1.txt"
     e = Environment(floorplan)
     robot1 = ""
     base1 = ""
@@ -88,7 +88,7 @@ if __name__ == "__main__":
         base1 = e.world[1][8]
     print(e)
     count = 0
-    while (robot1.battery_level <= 0 or count >= 100) is not True:
+    while (robot1.battery_level <= 0 or count >= 300) is not True:
         base1.act(e)
         robot1.act(e)
         print(e)
@@ -96,5 +96,5 @@ if __name__ == "__main__":
         print("count =", count)
         # print(robot1.map)
         print("-----------------------------------------------------------------------")
-    print("Out of Battery. Cycles:", count)
+    print("Program End. Cycles:", count)
     print(robot1.map)

@@ -26,18 +26,17 @@ class BaseStation(Agent):
         return
 
     def act(self, environment):
-        cell = self.sense(environment)
+        cell = self.sense(environment, self.position)
         self.decide(cell)
 
     def __str__(self):
         return self.dire
 
-    def sense(self, environment):
+    def sense(self, environment, position):
         neighbours = []
         for direction in ["up", "right", "down", "left"]:
             if ((direction == "up" and self.dire == "u") or (direction == "down" and self.dire == "d") or
                     (direction == "left" and self.dire == "l") or (direction == "right" and self.dire == "d")):
                 row_offset, col_offset = self.direction_offsets[direction]
-                neighbours.append((self.position[0] + row_offset, self.position[1] + col_offset))
-        # print(environment.get_cells(neighbours), "je")
+                neighbours.append((position[0] + row_offset, position[1] + col_offset))
         return environment.get_cells(neighbours)
