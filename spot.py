@@ -7,8 +7,8 @@ class EmptySpot:
         self.position = position
         self.dirty = random.randint(1, 100)
 
-    def clean(self):
-        self.dirty -= 10
+    def clean(self, rate):
+        self.dirty -= rate
         if self.dirty <= 0:
             self.dirty = 0
 
