@@ -55,7 +55,7 @@ def calc_cleaning(fan):
     speed_ctrl = ctrl.ControlSystem([rule1, rule2, rule3])
     speed_sim = ctrl.ControlSystemSimulation(speed_ctrl)
 
-    cleaning_rate.view()
+    # cleaning_rate.view()
 
     speed_sim.input['fan_speed'] = fan
 
