@@ -20,7 +20,7 @@ class Robot(Agent):
         self.spot = utils.EmptySpot((self.position[0], self.position[1]))
         self.spot.dirty = 0
         self.mode = "Idle"
-        self.fan_speed = 0
+        self.fan_speed = fuzzy.calc_fan_speed(0, 0)
         print("starting position", self.position, self.front)
 
     def decide(self, percept: dict[tuple[int, int], ...]):
@@ -32,7 +32,7 @@ class Robot(Agent):
     def act(self, environment):
         self.decide(environment)
         if self.mode == "Cleaning":
-            self.fan_speed = self.battery_level * 1.5
+            self.fan_speed = fuzzy.calc_fan_speed(self.spot.dirty, self.battery_level)
             if self.fan_speed > 100:
                 self.fan_speed = 100
             if self.fan_speed < 0:
@@ -40,7 +40,7 @@ class Robot(Agent):
             self.spot.clean(fuzzy.calc_cleaning(self.fan_speed))
             self.battery_level -= fuzzy.calc_battery(self.fan_speed)
         elif self.mode == "Moving":
-            self.fan_speed = 5
+            self.fan_speed = fuzzy.calc_fan_speed(0, 0)
             self.battery_level -= fuzzy.calc_battery(self.fan_speed)
         print("Spot Dirtiness:", self.spot.dirty, (self.position[1], self.position[0]))
         print("battery", self.battery_level)
@@ -92,7 +92,7 @@ class Robot(Agent):
         else:
             base_distance = self.calc_path(self.position, self.base_station_location)
         # print("bd", base_distance)
-        if ((len(base_distance) * 2) + 2 >= self.battery_level and self.position != self.base_station_location
+        if ((len(base_distance) * 2) + 3 >= self.battery_level and self.position != self.base_station_location
                 and base_distance[0] != "error"):
             # print("commence")
             self.mode = "Moving"
