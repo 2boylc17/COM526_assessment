@@ -55,11 +55,10 @@ def calc_cleaning(fan):
     speed_ctrl = ctrl.ControlSystem([rule1, rule2, rule3])
     speed_sim = ctrl.ControlSystemSimulation(speed_ctrl)
 
-    # cleaning_rate.view()
-
     speed_sim.input['fan_speed'] = fan
 
     speed_sim.compute()
+    # cleaning_rate.view(sim=speed_sim)
 
     return int(speed_sim.output['cleaning_rate'])
 
@@ -86,6 +85,7 @@ def calc_battery(fan):
     speed_sim.input['fan_speed'] = fan
 
     speed_sim.compute()
+    # battery_drainage.view(sim=speed_sim)
 
     return int(speed_sim.output['battery_drainage'])
 
@@ -128,7 +128,7 @@ def calc_fan_speed(dirty, battery):
     return int((speed_sim.output['fan_speed']))
 
 
-# print(calc_fan_speed(0, 30))
+# print(calc_battery(20))
 
 # print(speed_sim.output['cleaning_rate'], speed_sim.output['battery_drainage'])
 
