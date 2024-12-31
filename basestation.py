@@ -23,11 +23,13 @@ class BaseStation(Agent):
             # print([k[0], k[1]], self.front, v, "test")
             if utils.is_robot(v) and [k[0], k[1]] == self.front:
                 v.recharge()
+        # print("Decide")
         return
 
     def act(self, environment):
         cell = self.sense(environment, self.position)
         self.decide(cell)
+        # print("Act")
 
     def __str__(self):
         return self.dire
@@ -39,4 +41,5 @@ class BaseStation(Agent):
                     (direction == "left" and self.dire == "l") or (direction == "right" and self.dire == "d")):
                 row_offset, col_offset = self.direction_offsets[direction]
                 neighbours.append((position[0] + row_offset, position[1] + col_offset))
+        # print("Perceive")
         return environment.get_cells(neighbours)

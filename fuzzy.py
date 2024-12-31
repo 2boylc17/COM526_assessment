@@ -128,7 +128,9 @@ def calc_fan_speed(dirty, battery):
     return int((speed_sim.output['fan_speed']))
 
 
-# print(calc_battery(20))
+# print("Battery", calc_battery(60))
+# print("Cleaning", calc_cleaning(60))
+# print("Fan", calc_fan_speed(60, 60))
 
 # print(speed_sim.output['cleaning_rate'], speed_sim.output['battery_drainage'])
 

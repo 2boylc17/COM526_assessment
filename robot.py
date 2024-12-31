@@ -28,7 +28,7 @@ class Robot(Agent):
         for k, v in cell:
             self.map.world[v][k] = cell.get((k, v))
         self.move_choice(percept)
-        print("Decide")
+        # print("Decide")
 
     def act(self, environment):
         self.decide(environment)
@@ -47,9 +47,10 @@ class Robot(Agent):
             if self.fan_speed < 0:
                 self.fan_speed = 0
             self.battery_level -= fuzzy.calc_battery(self.fan_speed)
+        print("Fan Speed: ", self.fan_speed)
         print("Spot Dirtiness:", self.spot.dirty, (self.position[1], self.position[0]))
         print("battery", self.battery_level)
-        print("Act")
+        # print("Act")
 
     def front_change(self):
         if self.dire == '^':
@@ -62,6 +63,7 @@ class Robot(Agent):
             self.front = [self.position[0] + 1, self.position[1]]
 
     def random(self, environment):
+        # print("Random")
         directions = {
             "down": (0, 1),
             "up": (0, -1),
@@ -102,6 +104,7 @@ class Robot(Agent):
                 and base_distance[0] != "error"):
             # print("commence")
             self.mode = "Moving"
+            print("Routing")
             self.move_attempt(environment, base_distance[1])
         elif self.position == self.base_station_location and self.battery_level < 95:
             self.mode = "Charging"
@@ -132,6 +135,7 @@ class Robot(Agent):
                         dirty_spot = new_spot.position
                 elif new_spot.dirty > cell.get(dirty_spot).dirty:
                     dirty_spot = new_spot.position
+        print("Decided")
         return dirty_spot
 
     def move_attempt(self, environment, coordinates):

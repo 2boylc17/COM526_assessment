@@ -26,8 +26,8 @@ class Environment:
 
         return []
 
-
-    def load_assets(self, world_map: list):
+    @staticmethod
+    def load_assets(world_map: list):
         for i in range(len(world_map)):
             for j in range(len(world_map[i])):
                 if (world_map[i][j] == '^' or world_map[i][j] == 'v'
@@ -57,7 +57,8 @@ class Environment:
             out += "\n"
         return out
 
-    def move_to(self, start, goal):
+    @staticmethod
+    def move_to(start, goal):
         valid = False
         if (goal[0], goal[1]) == (start[0] + 1, goal[1]):
             valid = True
@@ -88,7 +89,7 @@ if __name__ == "__main__":
         base1 = e.world[1][8]
     print(e)
     count = 0
-    while (robot1.battery_level <= 0 or count >= 100) is not True:
+    while (robot1.battery_level <= 0 or count >= 500) is not True:
         base1.act(e)
         robot1.act(e)
         print(e)
